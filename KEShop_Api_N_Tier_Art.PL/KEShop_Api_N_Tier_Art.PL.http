@@ -1,0 +1,6 @@
+@KEShop_Api_N_Tier_Art.PL_HostAddress = http://localhost:5145
+
+GET {{KEShop_Api_N_Tier_Art.PL_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
