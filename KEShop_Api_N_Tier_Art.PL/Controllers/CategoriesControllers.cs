@@ -1,0 +1,69 @@
+﻿using KEShop_Api_N_Tier_Art.BLL.Services;
+using KEShop_Api_N_Tier_Art.DAL.DTO.Requests;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace KEShop_Api_N_Tier_Art.PL.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CategoriesControllers : ControllerBase
+    {
+        private readonly BLL.Services.ICategoryService categoryService;
+
+        public CategoriesControllers(ICategoryService categoryService)
+        {
+            categoryService = categoryService;
+        }
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var categories = categoryService.GetAllCategories();
+           
+            return Ok(categories);
+        }
+        [HttpGet("{id}")]
+        public IActionResult GetById([FromRoute]int id)
+        {
+            var category = categoryService.GetCategoryById(id);
+            if (category is null) return NotFound();
+            return Ok(category);
+        }
+        [HttpPost]
+        public IActionResult Create([FromBody] CategoryRequest request)
+        {
+          
+            var result = categoryService.CreateCategory(request);
+            if (result <= 0) return BadRequest("Failed to create category");
+            return CreatedAtAction(nameof(GetById), new { id = result }, null);
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult Update([FromRoute] int id, [FromBody] CategoryRequest request)
+        {
+            var updated = categoryService.UpdateCategory(id, request);
+           
+            return updated >0 ? Ok() : NotFound("Category not found or update failed");
+        }
+
+        [HttpPatch("ToggleStatus/{id}")]
+        public IActionResult ToggleStatus([FromRoute] int id)
+        {
+            var updated = categoryService.ToggleStatus(id);
+
+            return updated ?   Ok(new { message= " Status toggled" }) : NotFound(new { message = "Category toggled not found or update failed" });
+        }
+
+
+
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            var deleted = categoryService.DeleteCategory(id);
+            if (deleted <= 0) return NotFound("Category not found or delete failed");
+            return Ok(new { message = "Category deleted successfully" });
+
+        }
+    }
+}
