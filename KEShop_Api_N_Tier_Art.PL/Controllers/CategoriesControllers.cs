@@ -9,11 +9,11 @@ namespace KEShop_Api_N_Tier_Art.PL.Controllers
     [ApiController]
     public class CategoriesControllers : ControllerBase
     {
-        private readonly BLL.Services.ICategoryService categoryService;
+        private readonly ICategoryService categoryService;
 
         public CategoriesControllers(ICategoryService categoryService)
         {
-            categoryService = categoryService;
+            this.categoryService = categoryService;
         }
         [HttpGet]
         public IActionResult GetAll()
@@ -35,7 +35,7 @@ namespace KEShop_Api_N_Tier_Art.PL.Controllers
           
             var result = categoryService.CreateCategory(request);
             if (result <= 0) return BadRequest("Failed to create category");
-            return CreatedAtAction(nameof(GetById), new { id = result }, null);
+            return CreatedAtAction(nameof(GetById), new { id = result }, new { message = request } );
         }
 
         [HttpPatch("{id}")]
