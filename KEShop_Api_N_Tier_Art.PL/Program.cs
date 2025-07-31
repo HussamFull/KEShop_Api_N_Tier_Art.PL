@@ -1,12 +1,13 @@
-
-using KEShop_Api_N_Tier_Art.BLL.Services;
 using KEShop_Api_N_Tier_Art.DAL.Data;
-using KEShop_Api_N_Tier_Art.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Scalar;
 using Scalar.AspNetCore;
+using KEShop_Api_N_Tier_Art.BLL.Services.Classes;
+using KEShop_Api_N_Tier_Art.BLL.Services.Interfaces;
+using KEShop_Api_N_Tier_Art.DAL.Repositories.Classes;
+using KEShop_Api_N_Tier_Art.DAL.Repositories.Interfaces;
 
 namespace KEShop_Api_N_Tier_Art.PL
 {
@@ -35,7 +36,9 @@ namespace KEShop_Api_N_Tier_Art.PL
             
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
-            
+            builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+            builder.Services.AddScoped<IBrandService, BrandService>();
+
             // Register the services with dependency injection
             // builder.Services.AddScoped<CategoryService>();
 
