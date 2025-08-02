@@ -42,6 +42,13 @@ namespace KEShop_Api_N_Tier_Art.PL
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IBrandRepository, BrandRepository>();
             builder.Services.AddScoped<IBrandService, BrandService>();
+            builder.Services.AddScoped<ISeedData, SeedData>();
+            builder.Services.AddScoped<IAuthenticationService, AuthenticationSerive>();
+            // Register Identity services
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplictionDbContext>()
+                .AddDefaultTokenProviders();
+
 
             // Register the services with dependency injection
             // builder.Services.AddScoped<CategoryService>();
