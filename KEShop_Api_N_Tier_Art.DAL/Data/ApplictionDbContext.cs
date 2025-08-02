@@ -10,7 +10,11 @@ using System.Threading.Tasks;
 
 namespace KEShop_Api_N_Tier_Art.DAL.Data
 {
+<<<<<<< HEAD
     public class ApplictionDbContext : IdentityDbContext<ApplicationUser>
+=======
+    public class ApplictionDbContext : IdentityDbContext<ApplictionUser>
+>>>>>>> 76abe613bff7cfd810f1158b19341d7351c6d730
     {
         public DbSet<Category> Categories { get; set; }
 
@@ -26,7 +30,11 @@ namespace KEShop_Api_N_Tier_Art.DAL.Data
         {
             base.OnModelCreating(builder);
             // Configure the primary key for   entity
+<<<<<<< HEAD
             builder.Entity<ApplicationUser>().ToTable("Users");
+=======
+            builder.Entity<ApplictionUser>().ToTable("Users");
+>>>>>>> 76abe613bff7cfd810f1158b19341d7351c6d730
             builder.Entity<IdentityRole>().ToTable("Roles");
             builder.Entity<IdentityUserRole<string>>().ToTable("UsersRoles");
             //Ignore
