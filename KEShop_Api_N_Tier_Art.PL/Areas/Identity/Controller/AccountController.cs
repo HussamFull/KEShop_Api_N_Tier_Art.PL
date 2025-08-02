@@ -33,7 +33,7 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Identity.Controller
             }
         }
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+        public async Task<ActionResult<UserResponse>> Login( LoginRequest loginRequest)
         {
             if (loginRequest == null)
             {

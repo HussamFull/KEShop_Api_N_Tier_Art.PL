@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace KEShop_Api_N_Tier_Art.DAL.Models
 {
-<<<<<<< HEAD
+
     public class ApplicationUser : IdentityUser
-=======
-    public class ApplictionUser : IdentityUser
->>>>>>> 76abe613bff7cfd810f1158b19341d7351c6d730
+
     {
         public string FullName { get; set; }
  

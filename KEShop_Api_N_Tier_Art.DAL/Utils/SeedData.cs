@@ -14,20 +14,14 @@ namespace KEShop_Api_N_Tier_Art.DAL.Utils
     {
         private readonly ApplictionDbContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
-<<<<<<< HEAD
         private readonly UserManager<ApplicationUser> _userManager;
-=======
-        private readonly UserManager<ApplictionUser> _userManager;
->>>>>>> 76abe613bff7cfd810f1158b19341d7351c6d730
+
 
         public SeedData(
             ApplictionDbContext context, 
             RoleManager<IdentityRole> roleManager,
-<<<<<<< HEAD
             UserManager<ApplicationUser> userManager
-=======
-            UserManager<ApplictionUser> userManager
->>>>>>> 76abe613bff7cfd810f1158b19341d7351c6d730
+
             ) 
         {
             _context = context;
@@ -73,11 +67,8 @@ namespace KEShop_Api_N_Tier_Art.DAL.Utils
            
             if (!await _userManager.Users.AnyAsync())
             {
-<<<<<<< HEAD
                 var user1 = new ApplicationUser()
-=======
-                var user1 = new ApplictionUser()
->>>>>>> 76abe613bff7cfd810f1158b19341d7351c6d730
+
                 {
 
                     Email = "hosam813@gmail.com",
@@ -86,11 +77,8 @@ namespace KEShop_Api_N_Tier_Art.DAL.Utils
                     PhoneNumber = "1234567890"
 
                 };
-<<<<<<< HEAD
                 var user2 = new ApplicationUser()
-=======
-                var user2 = new ApplictionUser()
->>>>>>> 76abe613bff7cfd810f1158b19341d7351c6d730
+
                 {
 
                     Email = "hamada813@gmail.com",
@@ -99,11 +87,8 @@ namespace KEShop_Api_N_Tier_Art.DAL.Utils
                     PhoneNumber = "1234567830"
 
                 };
-<<<<<<< HEAD
                 var user3 = new ApplicationUser()
-=======
-                var user3 = new ApplictionUser()
->>>>>>> 76abe613bff7cfd810f1158b19341d7351c6d730
+
                 {
 
                     Email = "mohammad@gmail.com",

@@ -21,9 +21,25 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
             _userManager = userManager;
         }
 
-        public Task<UserResponse> LoginAsync(LoginRequest loginRequest)
+        public async Task<UserResponse> LoginAsync(LoginRequest loginRequest)
         {
-            throw new NotImplementedException("Login functionality is not implemented yet.");
+            
+            var user = await _userManager.FindByEmailAsync(loginRequest.Email);
+            if (user is null)
+            {
+                throw new Exception("Invalid Email or password");
+            }
+
+            var isPassValid = await _userManager.CheckPasswordAsync(user, loginRequest.Password);
+            if (!isPassValid)
+            {
+                throw new Exception("Invalid Email or password");
+            }
+            return new UserResponse()
+            {
+                Email = loginRequest.Email,
+                
+            };
 
         }
 
