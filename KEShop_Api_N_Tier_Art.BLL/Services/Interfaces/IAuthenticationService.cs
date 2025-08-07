@@ -14,5 +14,8 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Interfaces
         Task<UserResponse> LoginAsync(LoginRequest loginRequest);
         Task<UserResponse> RegisterAsync(RegisterRequest registerRequest);
         Task<string> ConfirmEmail(string token, string userId);
+        Task<bool> ForgotPassword(ForgotPasswordRequest request);
+        Task<bool> ResetPassword(ResetPasswordRequest request);
+
     }
 }

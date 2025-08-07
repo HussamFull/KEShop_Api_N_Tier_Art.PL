@@ -67,5 +67,38 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Identity.Controller
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPost("ForgotPassword")]
+        public async Task<ActionResult<string>> ForgotPassword([FromBody]ForgotPasswordRequest request)
+        {
+            if (request == null || string.IsNullOrEmpty(request.Email))
+            {
+                return BadRequest("Invalid forgot password request.");
+            }
+            try
+            {
+                var result = await _authenticationService.ForgotPassword(request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPatch("reset-password")]
+        public async Task<ActionResult<string>> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+           
+            try
+            {
+                var result = await _authenticationService.ResetPassword(request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

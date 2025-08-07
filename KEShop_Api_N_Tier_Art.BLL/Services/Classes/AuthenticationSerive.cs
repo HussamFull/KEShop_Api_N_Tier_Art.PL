@@ -3,6 +3,7 @@ using KEShop_Api_N_Tier_Art.DAL.DTO.Requests;
 using KEShop_Api_N_Tier_Art.DAL.DTO.Responses;
 using KEShop_Api_N_Tier_Art.DAL.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -14,10 +15,14 @@ using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using ForgotPasswordRequest = KEShop_Api_N_Tier_Art.DAL.DTO.Requests.ForgotPasswordRequest;
+using LoginRequest = KEShop_Api_N_Tier_Art.DAL.DTO.Requests.LoginRequest;
+using RegisterRequest = KEShop_Api_N_Tier_Art.DAL.DTO.Requests.RegisterRequest;
+using ResetPasswordRequest = KEShop_Api_N_Tier_Art.DAL.DTO.Requests.ResetPasswordRequest;
 
 namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
 {
-    public class AuthenticationSerive : IAuthenticationService 
+    public class AuthenticationSerive : IAuthenticationService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
@@ -139,6 +144,58 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public async Task<bool> ForgotPassword(ForgotPasswordRequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+          
+            var random = new Random();
+            var code = random.Next(1000, 9999).ToString(); 
+
+
+            user.CodeResetPassword = code;
+            user.PasswordResetCodeExpiry = DateTime.Now.AddMinutes(15);
+
+
+            await _userManager.UpdateAsync(user);
+
+            // Send email with reset password link
+           
+            await _emailSender.SendEmailAsync(
+                request.Email,
+                "Reset Password",
+                $"<h1>Reset your password</h1>" +
+                $"<p>code is  to reset your password:  {code} </p>"
+                
+            );
+            return true;
+        }
+
+        public async Task<bool> ResetPassword(ResetPasswordRequest request)
+            {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+            if (user.CodeResetPassword != request.Code || user.PasswordResetCodeExpiry < DateTime.Now)
+            {
+                throw new Exception("Invalid or expired reset code");
+            }
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var result = await _userManager.ResetPasswordAsync(user, token, request.NewPassword);
+            if (result.Succeeded)
+            
+                    await _emailSender.SendEmailAsync(request.Email , "change password", 
+                        "<h1> your password is changed </h1> ");
+            return true;
+
         }
 }
 }
