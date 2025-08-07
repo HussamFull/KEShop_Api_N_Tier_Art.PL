@@ -3,6 +3,7 @@ using KEShop_Api_N_Tier_Art.DAL.DTO.Requests;
 using KEShop_Api_N_Tier_Art.DAL.DTO.Responses;
 using KEShop_Api_N_Tier_Art.DAL.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -20,14 +21,16 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IEmailSender _emailSender;
 
         public AuthenticationSerive(UserManager<ApplicationUser> userManager, 
-            IConfiguration configuration
+            IConfiguration configuration,
+             IEmailSender emailSender
             )
         {
             _userManager = userManager;
             _configuration = configuration;
-           
+            _emailSender = emailSender;
         }
 
         public async Task<UserResponse> LoginAsync(LoginRequest loginRequest)
@@ -37,6 +40,11 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
             if (user is null)
             {
                 throw new Exception("Invalid Email or password");
+            }
+            // Check if the user is Confirm your Email
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+            {
+                throw new Exception("Plaease Confirm your Email ");
             }
 
             var isPassValid = await _userManager.CheckPasswordAsync(user, loginRequest.Password);
@@ -50,6 +58,22 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
 
             };
 
+        }
+
+        public async Task<string> ConfirmEmail(string token , string userId)
+            {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+            {
+                throw new Exception("User not found");
+            }
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                return "Email confirmed successfully";
+            }
+            return "Email confirmation failed";
+            
         }
 
         public async Task<UserResponse> RegisterAsync(RegisterRequest registerRequest)
@@ -66,6 +90,18 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
         
             if (Result.Succeeded)
             {
+                // Send Email Confirmation
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var escapeToken = Uri.EscapeDataString(token);
+                var emailUrl = $"https://localhost:7227/api/identity/account/confirmEmail?token={escapeToken}&userId={user.Id}";
+
+                await _emailSender.SendEmailAsync(
+                   user.Email,
+                    "Confirm your Email",
+                    $"<h1>Welcome {user.FullName}</h1>" +
+                    $"<p>Please confirm your email by clicking the link below:</p>" +
+                    $"<a href='{emailUrl}'> Confirm your email  </a>"
+                );
                 return new UserResponse()
                 {
                     Token = registerRequest.Email,

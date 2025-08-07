@@ -49,5 +49,23 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Identity.Controller
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet("ConfirmEmail")]
+        public async Task<ActionResult<string>> ConfirmEmail([FromQuery] string token, [FromQuery] string userId)
+        {
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("Invalid token or user ID.");
+            }
+            try
+            {
+                var result = await _authenticationService.ConfirmEmail(token, userId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

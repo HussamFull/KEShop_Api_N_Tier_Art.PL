@@ -74,7 +74,8 @@ namespace KEShop_Api_N_Tier_Art.DAL.Utils
                     Email = "hosam813@gmail.com",
                     UserName = "hosam813",
                     FullName = "Hosam Alnabelsi",
-                    PhoneNumber = "1234567890"
+                    PhoneNumber = "1234567890",
+                    EmailConfirmed = true,
 
                 };
                 var user2 = new ApplicationUser()
@@ -84,7 +85,8 @@ namespace KEShop_Api_N_Tier_Art.DAL.Utils
                     Email = "hamada813@gmail.com",
                     UserName = "hamada",
                     FullName = "hamada Alnabelsi",
-                    PhoneNumber = "1234567830"
+                    PhoneNumber = "1234567830",
+                    EmailConfirmed = true,
 
                 };
                 var user3 = new ApplicationUser()
@@ -94,7 +96,8 @@ namespace KEShop_Api_N_Tier_Art.DAL.Utils
                     Email = "mohammad@gmail.com",
                     UserName = "mohammad",
                     FullName = "mohammad Alnabelsi",
-                    PhoneNumber = "1234567840"
+                    PhoneNumber = "1234567840",
+                    EmailConfirmed = true,
 
                 };
 

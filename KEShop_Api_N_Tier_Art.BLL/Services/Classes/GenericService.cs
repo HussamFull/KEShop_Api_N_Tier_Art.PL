@@ -38,10 +38,13 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
 
         }
 
-        public IEnumerable<TResponse> GetAll()
+        public IEnumerable<TResponse> GetAll(bool onlyActive=false)
         {
             var entities = _repository.GetAll();
-           // if (entities is null || !entities.Any()) return Enumerable.Empty<TResponse>();
+            if (onlyActive )
+            {
+                 entities = entities.Where(e => e.Status == Status.Active);
+            }
             return entities.Adapt<IEnumerable<TResponse>>();
 
         }

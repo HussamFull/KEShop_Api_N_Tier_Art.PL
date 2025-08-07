@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Customer\Controller\" />
-    <Folder Include="Areas\Admin\Controller\" />
   </ItemGroup>
 
 </Project>

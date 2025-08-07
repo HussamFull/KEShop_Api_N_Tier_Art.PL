@@ -5,9 +5,11 @@ using KEShop_Api_N_Tier_Art.DAL.Models;
 using KEShop_Api_N_Tier_Art.DAL.Repositories.Classes;
 using KEShop_Api_N_Tier_Art.DAL.Repositories.Interfaces;
 using KEShop_Api_N_Tier_Art.DAL.Utils;
+using KEShop_Api_N_Tier_Art.PL.utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -47,6 +49,7 @@ namespace KEShop_Api_N_Tier_Art.PL
             builder.Services.AddScoped<IBrandService, BrandService>();
             builder.Services.AddScoped<ISeedData, SeedData>();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationSerive>();
+            builder.Services.AddScoped<IEmailSender, EmailSetting>();
             // Register Identity services
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplictionDbContext>()

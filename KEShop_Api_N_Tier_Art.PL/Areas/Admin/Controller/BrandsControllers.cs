@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KEShop_Api_N_Tier_Art.PL.Controllers
+namespace KEShop_Api_N_Tier_Art.PL.Areas.Admin.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[area]/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Area("Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public class BrandsControllers : ControllerBase
     {
         private readonly IBrandService brandService;
@@ -17,10 +18,10 @@ namespace KEShop_Api_N_Tier_Art.PL.Controllers
         {
             brandService = _brandService;
         }
-        [HttpGet]
+        [HttpGet("")]
         public IActionResult GetAll()
         {
-            var brands = brandService.GetAll();
+            var brands = brandService.GetAll(false);
 
             return Ok(brands);
         }
@@ -31,6 +32,8 @@ namespace KEShop_Api_N_Tier_Art.PL.Controllers
             if (brand is null) return NotFound();
             return Ok(brand);
         }
+
+
         [HttpPost]
         public IActionResult Create([FromBody] BrandRequest request)
         {
