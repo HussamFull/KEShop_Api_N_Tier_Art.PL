@@ -20,6 +20,8 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Admin.Controllers
         {
             _brandService = brandService;
         }
+
+        // Get All Brands
         [HttpGet("")]
         public IActionResult GetAll()
         {
@@ -28,7 +30,7 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Admin.Controllers
             return Ok(brands);
         }
 
-        // BrandController.cs
+        //Create  BrandController.cs
         [HttpPost("")]
         public async Task<IActionResult> Create([FromForm] BrandRequest request)
         {
@@ -37,19 +39,57 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Admin.Controllers
             // إضافة فحص لنتيجة العملية
             if (result <= 0)
             {
-                return BadRequest("فشل في إنشاء البراند");
+                return BadRequest("Failed to create a brand");
             }
 
             // إرجاع استجابة CreatedAtAction
             // ملاحظة: ستحتاج إلى دالة GetById في الكنترولر
-            return CreatedAtAction(nameof(GetById), new { id = result }, new { message = "تم إنشاء البراند بنجاح" });
+            return CreatedAtAction(nameof(GetById), new { id = result }, new { message = "Brand created successfully" });
         }
+
+
+        /// /////    /////   update BrandController.cs
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromForm] BrandRequest request)
+        {
+            var result = await _brandService.UpdateFile(id, request);
+
+            if (result <= 0)
+            {
+                return BadRequest("Failed to update a brand");
+            }
+
+            return Ok(new { message = "Brand updated successfully" });
+        }
+
+
+
+
+
+
+
 
         //[HttpPost("")]
         //public async Task<IActionResult> Create([FromForm] BrandRequest request)
         //{
         //    var result = await _brandService.CreateFile(request);
         //    return Ok(result);
+        //}
+
+
+
+        // Get Brand By Id
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> GetById([FromRoute] int id)
+        //{
+        //    var brand = await _brandService.GetById(id);
+
+        //    if (brand == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return Ok(brand);
         //}
 
         [HttpGet("{id}")]
@@ -60,7 +100,7 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Admin.Controllers
             return Ok(brand);
         }
 
-       
+
 
         //[HttpPost]
         //public IActionResult Create([FromBody] BrandRequest request)
@@ -71,13 +111,36 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Admin.Controllers
         //    return CreatedAtAction(nameof(GetById), new { id = result }, new { message = request });
         //}
 
-        [HttpPatch("{id}")]
-        public IActionResult Update([FromRoute] int id, [FromBody] BrandRequest request)
-        {
-            var updated = _brandService.Update(id, request);
 
-            return updated > 0 ? Ok() : NotFound("Brand not found or update failed");
-        }
+        // Update Brand By Id
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> Update([FromRoute] int id, [FromForm] BrandRequest request)
+        //{
+        //    // استدعاء دالة التعديل في الخدمة التي ستتعامل مع تحديث البيانات والصورة
+        //    var updated = await _brandService.UpdateFile(id, request);
+
+        //    // التحقق من نتيجة العملية
+        //    if (updated <= 0)
+        //    {
+        //        return BadRequest("Failed to update a brand");
+        //    }
+
+        //    // إرجاع استجابة OK
+        //    return Ok(new { message = "Brand updated successfully" });
+        //}
+
+        //[HttpPatch("{id}")]
+        //public IActionResult Update([FromRoute] int id, [FromBody] BrandRequest request)
+        //{
+        //    var updated = _brandService.Update(id, request);
+
+        //    return updated > 0 ? Ok() : NotFound("Brand not found or update failed");
+        //}
+
+
+
+
+        // ToggleStatus method to change the status of a brand
 
         [HttpPatch("ToggleStatus/{id}")]
         public IActionResult ToggleStatus([FromRoute] int id)
