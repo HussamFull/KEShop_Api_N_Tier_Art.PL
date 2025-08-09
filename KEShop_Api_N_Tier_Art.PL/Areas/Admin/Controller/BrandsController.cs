@@ -10,11 +10,11 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Admin.Controllers
     [ApiController]
     [Area("Admin")]
     [Authorize(Roles = "Admin,SuperAdmin")]
-    public class BrandsControllers : ControllerBase
+    public class BrandsController : ControllerBase
     {
         private readonly IBrandService brandService;
 
-        public BrandsControllers(IBrandService _brandService)
+        public BrandsController(IBrandService _brandService)
         {
             brandService = _brandService;
         }

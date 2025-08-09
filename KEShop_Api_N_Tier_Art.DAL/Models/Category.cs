@@ -9,7 +9,9 @@ namespace KEShop_Api_N_Tier_Art.DAL.Models
     public class Category : BaseModel
     {
         public string Name { get; set; }
-      
+
+        public List<Product> Products { get; set; } = new List<Product>();
+
     }
    
 }

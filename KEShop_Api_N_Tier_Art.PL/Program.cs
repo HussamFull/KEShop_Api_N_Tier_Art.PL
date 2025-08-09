@@ -45,8 +45,17 @@ namespace KEShop_Api_N_Tier_Art.PL
             
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+            builder.Services.AddScoped<IFileService, FileService>();
+
+
             builder.Services.AddScoped<IBrandRepository, BrandRepository>();
             builder.Services.AddScoped<IBrandService, BrandService>();
+
+
             builder.Services.AddScoped<ISeedData, SeedData>();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationSerive>();
             builder.Services.AddScoped<IEmailSender, EmailSetting>();
@@ -99,6 +108,8 @@ namespace KEShop_Api_N_Tier_Art.PL
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+
+            app.UseStaticFiles();
 
 
             app.MapControllers();
