@@ -4,6 +4,8 @@ using KEShop_Api_N_Tier_Art.DAL.DTO.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
+
 
 namespace KEShop_Api_N_Tier_Art.PL.Areas.Admin.Controllers
 {
@@ -152,13 +154,42 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Admin.Controllers
 
 
 
+        //[HttpDelete("{id}")]
+        //public IActionResult Delete([FromRoute] int id)
+        //{
+        //    var deleted = _brandService.Delete(id);
+        //    if (deleted <= 0) return NotFound("Brand not found or delete failed");
+        //    return Ok(new { message = "Brand deleted successfully" });
+
+        //}
+
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute] int id)
         {
-            var deleted = _brandService.Delete(id);
-            if (deleted <= 0) return NotFound("Brand not found or delete failed");
-            return Ok(new { message = "Brand deleted successfully" });
+            // أولاً: جلب البراند للحصول على مسار الصورة
+            var brand = _brandService.GetById(id);
+            if (brand is null)
+                return NotFound("Brand not found");
 
+            // ثانياً: حذف الصورة من مجلد wwwroot/images إذا كانت موجودة
+            if (!string.IsNullOrEmpty(brand.MainImage)) // تأكد من اسم الخاصية
+            {
+                // مسار المجلد الفعلي
+                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", brand.MainImage);
+
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+
+            // ثالثاً: حذف السجل من قاعدة البيانات
+            var deleted = _brandService.Delete(id);
+            if (deleted <= 0)
+                return BadRequest("Delete failed from database");
+
+            return Ok(new { message = "Brand and image deleted successfully" });
         }
+
     }
 }
