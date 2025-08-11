@@ -24,13 +24,36 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Admin.Controllers
         }
 
         // Get All Brands
+        //[HttpGet("")]
+        //public IActionResult GetAll()
+        //{
+        //    var brands = _brandService.GetAll(false);
+
+        //    return Ok(brands);
+        //}
+
         [HttpGet("")]
         public IActionResult GetAll()
         {
             var brands = _brandService.GetAll(false);
 
-            return Ok(brands);
+            // تعديل النتيجة لتحتوي رابط الصورة
+            var result = brands.Select(b => new
+            {
+                b.Id,
+                b.Name,
+                MainImageUrl = string.IsNullOrEmpty(b.MainImage)
+                    ? null
+                   : Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", b.MainImage)
+            });
+
+            return Ok(result);
         }
+
+
+
+
+
 
         //Create  BrandController.cs
         [HttpPost("")]
@@ -94,13 +117,32 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Admin.Controllers
         //    return Ok(brand);
         //}
 
+        //[HttpGet("{id}")]
+        //public IActionResult GetById([FromRoute] int id)
+        //{
+        //    var brand = _brandService.GetById(id);
+        //    if (brand is null) return NotFound();
+        //    return Ok(brand);
+        //}
         [HttpGet("{id}")]
         public IActionResult GetById([FromRoute] int id)
         {
             var brand = _brandService.GetById(id);
-            if (brand is null) return NotFound();
-            return Ok(brand);
+            if (brand is null)
+                return NotFound();
+
+            var result = new
+            {
+                brand.Id,
+                brand.Name,
+                MainImagePath = string.IsNullOrEmpty(brand.MainImage)
+                    ? null
+                    : Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", brand.MainImage)
+            };
+
+            return Ok(result);
         }
+
 
 
 

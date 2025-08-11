@@ -13,5 +13,7 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Interfaces
     {
         Task<int> CreateFile(BrandRequest request);
         Task<int> UpdateFile(int id, BrandRequest request);
+
+
     }
 }
