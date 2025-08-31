@@ -44,7 +44,7 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
                     ProductName = ci.Product.Name,
                     Price = ci.Product.Price,
                     Count = ci.Count,
-                    //ImageUrl = ci.Product.ImageUrl,
+                    MainImage = ci.Product.MainImage,
                     ProductDescription = ci.Product.Description
 
                 }).ToList(),
