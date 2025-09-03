@@ -24,7 +24,7 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Identity.Controller
             }
             try
             {
-                var result = await _authenticationService.RegisterAsync(registerRequest);
+                var result = await _authenticationService.RegisterAsync(registerRequest, Request);
                 return Ok(result);
             }
             catch (Exception ex)

@@ -46,9 +46,9 @@ namespace KEShop_Api_N_Tier_Art.DAL.Utils
             if (!await _context.Brands.AnyAsync())
             {
                 await _context.Brands.AddRangeAsync(
-                    new Brand { Name = "BrandA" },
-                    new Brand { Name = "BrandB" },
-                    new Brand {  Name = "BrandC" }
+                    new Brand { Name = "Samsung", MainImage= "sam.png" },
+                    new Brand { Name = "Apple", MainImage = "Apple.png" },
+                    new Brand {  Name = "MBrandC", MainImage = "m.png" }
                 );
             }
             await _context.SaveChangesAsync();

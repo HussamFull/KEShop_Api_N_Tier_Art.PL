@@ -2,6 +2,7 @@
 using KEShop_Api_N_Tier_Art.DAL.DTO.Requests;
 using KEShop_Api_N_Tier_Art.DAL.DTO.Responses;
 using KEShop_Api_N_Tier_Art.DAL.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -27,15 +28,18 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public AuthenticationSerive(UserManager<ApplicationUser> userManager, 
             IConfiguration configuration,
-             IEmailSender emailSender
+             IEmailSender emailSender,
+             SignInManager<ApplicationUser> signInManager
             )
         {
             _userManager = userManager;
             _configuration = configuration;
             _emailSender = emailSender;
+            _signInManager = signInManager;
         }
 
         public async Task<UserResponse> LoginAsync(LoginRequest loginRequest)
@@ -46,22 +50,28 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
             {
                 throw new Exception("Invalid Email or password");
             }
-            // Check if the user is Confirm your Email
-            if (!await _userManager.IsEmailConfirmedAsync(user))
-            {
-                throw new Exception("Plaease Confirm your Email ");
-            }
 
-            var isPassValid = await _userManager.CheckPasswordAsync(user, loginRequest.Password);
-            if (!isPassValid)
+          var result =   await _signInManager.CheckPasswordSignInAsync(user, loginRequest.Password, false);
+            if (!result.Succeeded)
+            {
+                return new UserResponse()
+                {
+                    Token = await CreateTokenAsync(user),
+
+                };
+            
+            }else if (result.IsNotAllowed)
+            {
+                throw new Exception("Please Confirm your Email");
+            }
+            else if (result.IsLockedOut)
+            {
+                throw new Exception("User is locked out");
+            }
+            else
             {
                 throw new Exception("Invalid Email or password");
             }
-            return new UserResponse()
-            {
-               Token = await CreateTokenAsync(user),
-
-            };
 
         }
 
@@ -81,7 +91,7 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
             
         }
 
-        public async Task<UserResponse> RegisterAsync(RegisterRequest registerRequest)
+        public async Task<UserResponse> RegisterAsync(RegisterRequest registerRequest, HttpRequest request)
         {
             var user = new ApplicationUser()
             {
@@ -98,8 +108,9 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
                 // Send Email Confirmation
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var escapeToken = Uri.EscapeDataString(token);
-                var emailUrl = $"https://localhost:7227/api/identity/account/confirmEmail?token={escapeToken}&userId={user.Id}";
+                var emailUrl = $"{request.Scheme}://{request.Host}/api/identity/account/confirmEmail?token={escapeToken}&userId={user.Id}";
 
+                await _userManager.AddToRoleAsync(user, "Customer");
                 await _emailSender.SendEmailAsync(
                    user.Email,
                     "Confirm your Email",
@@ -110,7 +121,6 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
                 return new UserResponse()
                 {
                     Token = registerRequest.Email,
-                   
                 };
             }
             else

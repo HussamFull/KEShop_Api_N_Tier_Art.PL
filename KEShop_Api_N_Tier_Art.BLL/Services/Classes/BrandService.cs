@@ -18,7 +18,8 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
         private readonly IBrandRepository _repository;
         private readonly IFileService _fileService;
 
-        public BrandService(IBrandRepository repository, IFileService fileService) : base(repository)
+        public BrandService(IBrandRepository repository, 
+            IFileService fileService) : base(repository)
         {
             _repository = repository;
             _fileService = fileService;

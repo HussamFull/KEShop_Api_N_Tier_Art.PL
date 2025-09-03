@@ -12,7 +12,7 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Admin.Controllers
     [Route("api/[area]/[controller]")]
     [ApiController]
     [Area("Admin")]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    //[Authorize(Roles = "Admin,SuperAdmin")]
     public class BrandsController : ControllerBase
     {
         private readonly IBrandService _brandService;

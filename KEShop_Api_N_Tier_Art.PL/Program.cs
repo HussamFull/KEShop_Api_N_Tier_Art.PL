@@ -15,8 +15,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Scalar;
 using Scalar.AspNetCore;
+using Stripe;
 using System.Text;
 using System.Threading.Tasks;
+using FileService = KEShop_Api_N_Tier_Art.BLL.Services.Classes.FileService;
+using ProductService = KEShop_Api_N_Tier_Art.BLL.Services.Classes.ProductService;
 
 namespace KEShop_Api_N_Tier_Art.PL
 {
@@ -63,7 +66,22 @@ namespace KEShop_Api_N_Tier_Art.PL
             builder.Services.AddScoped<IAuthenticationService, AuthenticationSerive>();
             builder.Services.AddScoped<IEmailSender, EmailSetting>();
             // Register Identity services
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
+                options =>
+                {
+                    options.Password.RequireDigit = true;
+                    options.Password.RequireLowercase = true;
+                    options.Password.RequireUppercase = true;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequiredLength = 8;
+                    options.User.RequireUniqueEmail = true;
+                    options.SignIn.RequireConfirmedEmail = true;
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+                    options.Lockout.MaxFailedAccessAttempts = 10;
+                   // options.Lockout.AllowedForNewUsers = true;
+                }
+
+                )
                 .AddEntityFrameworkStores<ApplictionDbContext>()
                 .AddDefaultTokenProviders();
             // JWT 
@@ -93,6 +111,13 @@ namespace KEShop_Api_N_Tier_Art.PL
             // Register the services with dependency injection
             // builder.Services.AddScoped<CategoryService>();
 
+
+            // Configure Stripe settings
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+
+
+            // ******* ///
 
             var app = builder.Build();
 
