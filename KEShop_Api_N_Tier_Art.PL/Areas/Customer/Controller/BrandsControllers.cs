@@ -10,7 +10,7 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Customer.Controllers
     [Route("api/[area]/[controller]")]
     [ApiController]
     [Area("Customer")]
-   // [Authorize(Roles = "Customer")]
+    [Authorize(Roles = "Customer")]
     
 
     public class BrandsControllers : ControllerBase
