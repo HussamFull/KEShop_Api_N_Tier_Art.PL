@@ -42,37 +42,78 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
             _signInManager = signInManager;
         }
 
+        //public async Task<UserResponse> LoginAsync(LoginRequest loginRequest)
+        //{
+            
+        //    var user = await _userManager.FindByEmailAsync(loginRequest.Email);
+        //    if (user is null)
+        //    {
+        //        throw new Exception("Invalid Email or password");
+        //    }
+
+        //  var result =   await _signInManager.CheckPasswordSignInAsync(user, loginRequest.Password, false);
+        //    if (!result.Succeeded)
+        //    {
+        //        return new UserResponse()
+        //        {
+        //            Token = await CreateTokenAsync(user),
+
+        //        };
+
+        //    }
+        //    else if (result.IsLockedOut)
+        //    {
+        //        throw new Exception("User is locked out");
+        //    }
+
+        //    else if (result.IsNotAllowed)
+        //    {
+        //        throw new Exception("Please Confirm your Email");
+        //    }
+           
+        //    else
+        //    {
+        //        throw new Exception("Invalid Email or password");
+        //    }
+
+        //}
+
         public async Task<UserResponse> LoginAsync(LoginRequest loginRequest)
         {
-            
+            // البحث عن المستخدم باستخدام البريد الإلكتروني
             var user = await _userManager.FindByEmailAsync(loginRequest.Email);
             if (user is null)
             {
                 throw new Exception("Invalid Email or password");
             }
 
-          var result =   await _signInManager.CheckPasswordSignInAsync(user, loginRequest.Password, false);
-            if (!result.Succeeded)
+            // التحقق من صحة كلمة المرور
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginRequest.Password, false);
+
+            // التحقق من نتيجة تسجيل الدخول
+            if (result.Succeeded)
             {
+                // إذا نجحت العملية، قم بإنشاء وإرجاع التوكن
                 return new UserResponse()
                 {
                     Token = await CreateTokenAsync(user),
-
                 };
-            
-            }else if (result.IsNotAllowed)
-            {
-                throw new Exception("Please Confirm your Email");
             }
             else if (result.IsLockedOut)
             {
+                // إذا كان المستخدم مقفولاً
                 throw new Exception("User is locked out");
+            }
+            else if (result.IsNotAllowed)
+            {
+                // إذا كان المستخدم غير مسموح له بالدخول (مثل عدم تأكيد البريد الإلكتروني)
+                throw new Exception("Please Confirm your Email");
             }
             else
             {
+                // إذا فشلت العملية لأي سبب آخر (مثل كلمة مرور خاطئة)
                 throw new Exception("Invalid Email or password");
             }
-
         }
 
         public async Task<string> ConfirmEmail(string token , string userId)

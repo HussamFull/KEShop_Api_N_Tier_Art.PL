@@ -10,30 +10,27 @@ using System.Threading.Tasks;
 
 namespace KEShop_Api_N_Tier_Art.DAL.Repositories.Classes
 {
-    
-    public class CartRepository : ICartRepository
+    public class OrderRepository : IOrderRepository
     {
         private readonly ApplictionDbContext _context;
-        public CartRepository(ApplictionDbContext context)
+
+        public OrderRepository( ApplictionDbContext context)
         {
             _context = context;
-            
         }
-        public async Task<int> AddAsync(Cart cart)
+
+        public async Task<Order?> AddAsync(Order order)
         {
-
-                await  _context.Carts.AddAsync(cart);
-                return await _context.SaveChangesAsync();
             
+            await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
+            return order;
         }
 
-   
-
-        public async Task<List<Cart>> GetUserCartAsync(string UserId)
+        public async Task<Order?> GetUserByOrderAsync(int orderId)
         {
-            return await _context.Carts.Include(c => c.Product).Where(c => c.UserId == UserId).ToListAsync();
+            return await _context.Orders.Include(o => o.User)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
         }
-
-       
     }
 }

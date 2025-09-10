@@ -1,5 +1,6 @@
 using KEShop_Api_N_Tier_Art.BLL.Services.Classes;
 using KEShop_Api_N_Tier_Art.BLL.Services.Interfaces;
+using KEShop_Api_N_Tier_Art.DAL;
 using KEShop_Api_N_Tier_Art.DAL.Data;
 using KEShop_Api_N_Tier_Art.DAL.Models;
 using KEShop_Api_N_Tier_Art.DAL.Repositories.Classes;
@@ -20,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FileService = KEShop_Api_N_Tier_Art.BLL.Services.Classes.FileService;
 using ProductService = KEShop_Api_N_Tier_Art.BLL.Services.Classes.ProductService;
+
 
 namespace KEShop_Api_N_Tier_Art.PL
 {
@@ -49,8 +51,16 @@ namespace KEShop_Api_N_Tier_Art.PL
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
 
+            builder.Services.AddScoped<ICheckOutService, CheckOutService>();
+          
+
             builder.Services.AddScoped<ICartRepository, CartRepository>();
             builder.Services.AddScoped<ICartService, CartService>();
+
+            builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
 
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -69,15 +79,15 @@ namespace KEShop_Api_N_Tier_Art.PL
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
                 options =>
                 {
-                    options.Password.RequireDigit = true;
-                    options.Password.RequireLowercase = true;
-                    options.Password.RequireUppercase = true;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequiredLength = 8;
-                    options.User.RequireUniqueEmail = true;
-                    options.SignIn.RequireConfirmedEmail = true;
-                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
-                    options.Lockout.MaxFailedAccessAttempts = 10;
+                    //options.Password.RequireDigit = true;
+                    //options.Password.RequireLowercase = true;
+                    //options.Password.RequireUppercase = true;
+                    //options.Password.RequireNonAlphanumeric = false;
+                    //options.Password.RequiredLength = 8;
+                    //options.User.RequireUniqueEmail = true;
+                    //options.SignIn.RequireConfirmedEmail = true;
+                    //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+                    //options.Lockout.MaxFailedAccessAttempts = 10;
                    // options.Lockout.AllowedForNewUsers = true;
                 }
 

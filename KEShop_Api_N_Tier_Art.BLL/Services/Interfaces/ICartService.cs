@@ -10,8 +10,8 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Interfaces
 {
     public interface ICartService
     {
-        bool AddToCart(CartRequest request, string UserId);
+        Task<bool> AddToCartAsync(CartRequest request, string UserId);
 
-        CartSummaryResponse GetCartSummaryResponse(string UserId);
+        Task<CartSummaryResponse> GetCartSummaryResponseAsync(string UserId);
     }
 }

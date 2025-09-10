@@ -21,21 +21,27 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
             _cartRepository = cartRepository;
             
         }
+
         public bool AddToCart(CartRequest request, string UserId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> AddToCartAsync(CartRequest request, string UserId)
         {
             var newItem = new Cart
                 { ProductId = request.ProductId,
                 UserId = UserId,
                  Count = 1 }
             ;
-            return _cartRepository.Add(newItem) > 0;
+            return await _cartRepository.AddAsync(newItem) > 0;
         }
 
-       
+    
 
-       public CartSummaryResponse GetCartSummaryResponse(string UserId)
+        public async Task<CartSummaryResponse> GetCartSummaryResponseAsync(string UserId)
         {
-            var cartItems = _cartRepository.GetUserCart(UserId);
+            var cartItems = await _cartRepository.GetUserCartAsync(UserId);
             var response = new CartSummaryResponse
             {
                 Items = cartItems.Select(ci => new CartResponse
@@ -51,5 +57,7 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
             };
             return response;
         }
+
+      
     }
 }

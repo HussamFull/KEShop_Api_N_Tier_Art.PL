@@ -1,4 +1,5 @@
 ﻿using KEShop_Api_N_Tier_Art.BLL.Services.Interfaces;
+
 using KEShop_Api_N_Tier_Art.DAL.DTO.Requests;
 using KEShop_Api_N_Tier_Art.DAL.DTO.Responses;
 using KEShop_Api_N_Tier_Art.DAL.Repositories.Interfaces;
@@ -10,27 +11,83 @@ using SessionLineItemOptions = Stripe.Checkout.SessionLineItemOptions;
 using SessionLineItemPriceDataOptions = Stripe.Checkout.SessionLineItemPriceDataOptions;
 using SessionLineItemPriceDataProductDataOptions = Stripe.Checkout.SessionLineItemPriceDataProductDataOptions;
 using SessionCreateOptions = Stripe.Checkout.SessionCreateOptions;
-
-
-
-
-
-
+using KEShop_Api_N_Tier_Art.DAL.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
 {
     public class CheckOutService : ICheckOutService
     {
         private readonly ICartRepository _cartRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IEmailSender _emailSender;
+        private readonly IOrderItemRepository _orderItemRepository;
 
-        public CheckOutService(ICartRepository cartRepository) 
+        public CheckOutService(ICartRepository cartRepository, 
+                               IOrderRepository orderRepository, 
+                               IEmailSender emailSender,
+                               IOrderItemRepository orderItemRepository
+
+
+                                ) 
         {
             _cartRepository = cartRepository;
+            _orderRepository = orderRepository;
+            _emailSender = emailSender;
+            _orderItemRepository = orderItemRepository;
         }
+
+        public async Task<bool> HandlePaymentSuccessAsync(int orderId)
+        {
+           var order = await _orderRepository.GetUserByOrderAsync(orderId);
+
+            var subject = "";
+            var body = "";
+            if (order.PaymentMethod == PaymentMethodEnum.Visa)
+            {
+
+                order.Status = OrderStatusEnum.Approved;
+                var carts = await _cartRepository.GetUserCartAsync(order.UserId);
+                var orderItems = new List<OrderItem>();
+                foreach (var cartItem in carts)
+                {
+                    var orderItem = new OrderItem
+                    {
+                        OrderId = order.Id,
+                        ProductId = cartItem.ProductId,
+                        totalPrice = cartItem.Product.Price * cartItem.Count,
+                        Price = cartItem.Product.Price,
+                        Count = cartItem.Count
+                    };
+                    orderItems.Add(orderItem);
+                }
+
+                await _orderItemRepository.AddRangeAsync(orderItems);
+
+
+                subject = "Payment Successful - kashop";
+                body = $"<h1>thank you for your payment</h1>" +
+                    $"<p>your payment for order {orderId}</p>" +
+                    $"<p>total Amount : ${order.TotalAmount}";
+            }
+            else if (order.PaymentMethod == PaymentMethodEnum.Cash)
+            {
+                subject = "order placed successfully";
+                body = $"<h1>thank you for your order</h1>" +
+                    $"<p>your payment for order {orderId}</p>" +
+                    $"<p>total Amount : ${order.TotalAmount}";
+            }
+
+            await _emailSender.SendEmailAsync(order.User.Email, subject, body);
+            return true;
+
+
+        }
+
         public async Task<CheckOutResponse> ProcessPaymentAsync(CheckOutRequest request, string UserId, HttpRequest httpRequest)
         {
             // الحصول على محتويات سلة المستخدم
-            var cartItem =  _cartRepository.GetUserCart(UserId);
+            var cartItem = await  _cartRepository.GetUserCartAsync(UserId);
 
             // التحقق من أن السلة ليست فارغة
             if (!cartItem.Any())
@@ -41,10 +98,23 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
                     Message = "Cart is empty."
                 };
             }
-          
+
+            // Order 
+            Order order = new Order 
+                {
+                UserId = UserId,
+                PaymentMethod = request.PaymentMethod,
+                TotalAmount = cartItem.Sum(ci => ci.Product.Price * ci.Count),
+                //Status = OrderStatusEnum.Pending,
+                //OrderDate = DateTime.Now
+            };
+            await _orderRepository.AddAsync(order);
+
+            // معالجة الدفع بناءً على طريقة الدفع المحددة
 
 
-            if (request.PaymentMethod == "Cash") 
+
+            if (request.PaymentMethod == PaymentMethodEnum.Cash) 
             {
                 // يمكن إضافة منطق معالجة الدفع النقدي هنا، مثل تحديث حالة الطلب في قاعدة البيانات.
                 return new CheckOutResponse
@@ -55,7 +125,7 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
 
             }
 
-            if (request.PaymentMethod == "Visa")
+            if (request.PaymentMethod == PaymentMethodEnum.Visa)
             {
                 var options = new SessionCreateOptions
                 {
@@ -67,7 +137,7 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
                
             },
                     Mode = "payment",
-                    SuccessUrl = $"{httpRequest.Scheme}://{httpRequest.Host}/checkout/success",
+                    SuccessUrl = $"{httpRequest.Scheme}://{httpRequest.Host}/api/Customer/checkouts/Success/{order.Id}",
                     CancelUrl = $"{httpRequest.Scheme}://{httpRequest.Host}/checkout/cancel",
                 };
 
@@ -91,12 +161,15 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
                 var service = new SessionService();
                 var session = service.Create(options);
 
+                order.PaymentId = session.Id;
+
                 return new CheckOutResponse
                 {
                     Success = true,
                     Message = "Payment processed successfully.",
-                    Url = session.Url
-                    //SessionId = session.Id,
+                    PaymentId = session.Id,
+                    Url = session.Url,
+                   
                 };
 
 
@@ -108,5 +181,7 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
                 Message = "Invalid payment method."
             };
         }
+
+       
     }
 }

@@ -25,7 +25,7 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Customer.Controller
         }
 
         [HttpPost("")]
-        public IActionResult AddToCart([FromBody] CartRequest request)
+        public async Task<IActionResult> AddToCart([FromBody] CartRequest request)
         {
             // Get the UserId from the authenticated user
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -33,7 +33,7 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Customer.Controller
             {
                 return Unauthorized("User is not authenticated.");
             }
-            var result = _cartService.AddToCart(request, userId);
+            var result = await _cartService.AddToCartAsync(request, userId);
             if (result)
             {
                 return Ok("Product added to cart successfully.");
@@ -46,12 +46,12 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Customer.Controller
 
         [HttpGet("")]
 
-        public IActionResult GetUserCart()
+        public async Task<IActionResult> GetUserCart()
         {
             // Get the UserId from the authenticated user
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
            
-            var result = _cartService.GetCartSummaryResponse(userId);
+            var result = await _cartService.GetCartSummaryResponseAsync(userId);
             return Ok(result);
         }
     }
