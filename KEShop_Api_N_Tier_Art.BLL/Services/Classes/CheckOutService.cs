@@ -22,11 +22,13 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
         private readonly IOrderRepository _orderRepository;
         private readonly IEmailSender _emailSender;
         private readonly IOrderItemRepository _orderItemRepository;
+        private readonly IProductRepository _productRepository;
 
         public CheckOutService(ICartRepository cartRepository, 
                                IOrderRepository orderRepository, 
                                IEmailSender emailSender,
-                               IOrderItemRepository orderItemRepository
+                               IOrderItemRepository orderItemRepository,
+                               IProductRepository productRepository
 
 
                                 ) 
@@ -35,6 +37,7 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
             _orderRepository = orderRepository;
             _emailSender = emailSender;
             _orderItemRepository = orderItemRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<bool> HandlePaymentSuccessAsync(int orderId)
@@ -49,6 +52,7 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
                 order.Status = OrderStatusEnum.Approved;
                 var carts = await _cartRepository.GetUserCartAsync(order.UserId);
                 var orderItems = new List<OrderItem>();
+                var productUpdate = new List<(int productId, int quantity)>();
                 foreach (var cartItem in carts)
                 {
                     var orderItem = new OrderItem
@@ -60,9 +64,12 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
                         Count = cartItem.Count
                     };
                     orderItems.Add(orderItem);
+                    productUpdate.Add((cartItem.ProductId, cartItem.Count));
                 }
 
                 await _orderItemRepository.AddRangeAsync(orderItems);
+                await _cartRepository.ClearCartAsync(order.UserId);
+                await _productRepository.DecreaseQuantityAsync(productUpdate);
 
 
                 subject = "Payment Successful - kashop";

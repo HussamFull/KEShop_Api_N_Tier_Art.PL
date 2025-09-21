@@ -37,6 +37,17 @@ namespace KEShop_Api_N_Tier_Art.PL
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
+            // Add Policy 
+            var userPolicy= "";
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: userPolicy, policy =>
+                {
+                    policy.AllowAnyOrigin();
+                           
+                });
+            });
+
 
             // ******* /// 
 
@@ -47,7 +58,11 @@ namespace KEShop_Api_N_Tier_Art.PL
 
 
             // Register the repositories with dependency injection
-            
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IUserService, UserService>();
+
+
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
 
@@ -145,6 +160,8 @@ namespace KEShop_Api_N_Tier_Art.PL
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
+            app.UseCors(userPolicy);
             app.UseAuthorization();
 
             app.UseStaticFiles();

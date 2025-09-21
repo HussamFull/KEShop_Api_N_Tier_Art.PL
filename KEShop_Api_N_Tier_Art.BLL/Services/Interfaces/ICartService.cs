@@ -13,5 +13,7 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Interfaces
         Task<bool> AddToCartAsync(CartRequest request, string UserId);
 
         Task<CartSummaryResponse> GetCartSummaryResponseAsync(string UserId);
+
+        Task<bool> ClearCartAsync(string userId);
     }
 }

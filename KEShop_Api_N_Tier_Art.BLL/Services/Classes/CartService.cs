@@ -22,10 +22,7 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
             
         }
 
-        public bool AddToCart(CartRequest request, string UserId)
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public async Task<bool> AddToCartAsync(CartRequest request, string UserId)
         {
@@ -37,7 +34,11 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
             return await _cartRepository.AddAsync(newItem) > 0;
         }
 
-    
+        public async Task<bool> ClearCartAsync(string userId)
+        {
+           
+            return await _cartRepository.ClearCartAsync(userId);
+        }
 
         public async Task<CartSummaryResponse> GetCartSummaryResponseAsync(string UserId)
         {
