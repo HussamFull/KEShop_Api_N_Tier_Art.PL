@@ -47,5 +47,24 @@ namespace KEShop_Api_N_Tier_Art.DAL.Repositories.Classes
                 .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
         }
+
+        public async Task<List<Order>> GetOrderByUserAsync(string userId)
+        {
+            return await _context.Orders.Include(o => o.User)
+                .OrderByDescending(o => o.OrderDate).ToListAsync();
+        }
+
+        public async Task<bool> ChangeStatusAsync(int orderId, OrderStatusEnum newStatus)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null)
+            {
+                return false; // Order not found
+            }
+            order.Status = newStatus;
+            
+           var result =  await _context.SaveChangesAsync();
+            return result > 0;
+        }
     }
 }

@@ -13,8 +13,14 @@ namespace KEShop_Api_N_Tier_Art.DAL.Repositories.Interfaces
 
         Task<Order?> AddAsync(Order order);
 
-       // Task<List<Order>> GetAllWithUserAsync(string userId);
-       // Task<List<Order>> GetByStatusAsync(OrderStatusEnum status);
+        Task<List<Order>> GetAllWithUserAsync(string userId);
+
+        Task<bool> ChangeStatusAsync(int orderId, OrderStatusEnum newStatus);
+
+        Task<List<Order>> GetOrderByUserAsync(string userId);
+
+
+        Task<List<Order>> GetByStatusAsync(OrderStatusEnum status);
 
     }
 }

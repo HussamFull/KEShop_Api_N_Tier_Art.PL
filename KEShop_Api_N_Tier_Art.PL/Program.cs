@@ -63,6 +63,7 @@ namespace KEShop_Api_N_Tier_Art.PL
             builder.Services.AddScoped<IUserService, UserService>();
 
 
+
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
 
@@ -75,6 +76,7 @@ namespace KEShop_Api_N_Tier_Art.PL
             builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
 
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
 
 
             builder.Services.AddScoped<IProductService, ProductService>();
