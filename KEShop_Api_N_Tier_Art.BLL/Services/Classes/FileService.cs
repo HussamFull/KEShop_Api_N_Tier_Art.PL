@@ -54,5 +54,30 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
 
             throw new Exception("File is null or empty");
         }
+
+        public async Task<List<string>> UploadManyAsync(List<IFormFile> files)
+        {
+            var fileNames = new List<string>();
+            foreach (var file in files)
+            {
+                if (file != null && file.Length > 0)
+                {
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+                    // **الخطوة 1: تحديد مسار المجلد**
+                    var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+
+                  
+
+                    using (var stream = File.Create(folderPath))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                     fileNames.Add(fileName);
+                }
+            }
+            return fileNames;
+        }
     }
 }

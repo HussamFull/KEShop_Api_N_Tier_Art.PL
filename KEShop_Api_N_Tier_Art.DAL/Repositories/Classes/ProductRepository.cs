@@ -1,6 +1,8 @@
 ﻿using KEShop_Api_N_Tier_Art.DAL.Data;
 using KEShop_Api_N_Tier_Art.DAL.Models;
 using KEShop_Api_N_Tier_Art.DAL.Repositories.Interfaces;
+
+
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -51,6 +53,14 @@ namespace KEShop_Api_N_Tier_Art.DAL.Repositories.Classes
                 product.Quantity -= item.quantity;
             }
             await _context.SaveChangesAsync();
+        }
+
+
+      
+
+        public List<Product> GetAllProductsWithImage()
+        {
+            return _context.Products.Include(p => p.SubImages).ToList();
         }
     }
 }

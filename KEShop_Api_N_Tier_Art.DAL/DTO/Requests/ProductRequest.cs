@@ -15,10 +15,10 @@ namespace KEShop_Api_N_Tier_Art.DAL.DTO.Requests
         public decimal Price { get; set; }
         public decimal Discount { get; set; }
         public IFormFile MainImage { get; set; }
+        public List<IFormFile> SubImages { get; set; }
         public int Quantity { get; set; }
         public double Rate { get; set; }
         public int CategoryId { get; set; }
-       
         public int? BrandId { get; set; }
         
     }

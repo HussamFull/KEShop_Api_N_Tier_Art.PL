@@ -1,6 +1,7 @@
 ﻿using KEShop_Api_N_Tier_Art.BLL.Services.Classes;
 using KEShop_Api_N_Tier_Art.BLL.Services.Interfaces;
 using KEShop_Api_N_Tier_Art.DAL.DTO.Requests;
+using KEShop_Api_N_Tier_Art.DAL.DTO.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,13 +22,13 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Admin.Controllers
             _productService = ProductService;
         }
         [HttpGet("")]
-        public IActionResult GetAll() => Ok(_productService.GetAll());
+        public IActionResult GetAll() => Ok(_productService.GetAllProducts(Request));
       
 
         [HttpPost("")]
         public async Task<IActionResult> Create([FromForm] ProductRequest request)
         {
-                var result = await _productService.CreateFile(request);
+                var result = await _productService.CreateProduct(request);
                 return Ok(result);           
         }
 
