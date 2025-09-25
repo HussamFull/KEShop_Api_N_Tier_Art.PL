@@ -22,5 +22,7 @@ namespace KEShop_Api_N_Tier_Art.DAL.Repositories.Interfaces
 
         Task<List<Order>> GetByStatusAsync(OrderStatusEnum status);
 
+        Task<bool> UserHasApprovedOrderForProductAsync(string userId, int productId);
+
     }
 }

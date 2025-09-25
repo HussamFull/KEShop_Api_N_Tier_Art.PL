@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FileService = KEShop_Api_N_Tier_Art.BLL.Services.Classes.FileService;
 using ProductService = KEShop_Api_N_Tier_Art.BLL.Services.Classes.ProductService;
+using ReviewService = KEShop_Api_N_Tier_Art.BLL.Services.Classes.ReviewService;
 
 
 namespace KEShop_Api_N_Tier_Art.PL
@@ -61,6 +62,9 @@ namespace KEShop_Api_N_Tier_Art.PL
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
+
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
 
 
 

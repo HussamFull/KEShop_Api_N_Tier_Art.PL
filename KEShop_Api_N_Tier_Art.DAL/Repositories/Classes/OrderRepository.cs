@@ -66,5 +66,14 @@ namespace KEShop_Api_N_Tier_Art.DAL.Repositories.Classes
            var result =  await _context.SaveChangesAsync();
             return result > 0;
         }
+
+        public async Task<bool> UserHasApprovedOrderForProductAsync(string userId, int productId)
+        {
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                .AnyAsync(e => e.UserId == userId &&
+                               e.Status == OrderStatusEnum.Approved &&
+                               e.OrderItems.Any(oi => oi.ProductId == productId));
+        }
     }
 }
