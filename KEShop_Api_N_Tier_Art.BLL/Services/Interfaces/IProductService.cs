@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace KEShop_Api_N_Tier_Art.BLL.Services.Interfaces
 {
-    public  interface IProductService : IGenaricService<ProductRequest, ProductResponse, Product>
+    public interface IProductService : IGenaricService<ProductRequest, ProductResponse, Product>
     {
         Task<int> CreateProduct(ProductRequest request);
-        Task<List<ProductResponse>> GetAllProducts(HttpRequest request, bool onlayActive = false);
+        Task<List<ProductResponse>> GetAllProducts(HttpRequest request, int pageNumber = 1, int pageSize = 1, bool onlayActive = false);
     }
 }

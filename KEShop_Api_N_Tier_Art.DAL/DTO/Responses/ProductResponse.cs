@@ -24,6 +24,8 @@ namespace KEShop_Api_N_Tier_Art.DAL.DTO.Responses
 
         public List<string> SubImagesUrl { get; set; } = new List<string>();
 
+        public List<ReviewResponse> Reviews { get; set; } = new List<ReviewResponse>();
+
 
     }
 }

@@ -22,6 +22,8 @@ namespace KEShop_Api_N_Tier_Art.DAL.Models
 
         public List<ProductImage> SubImages { get; set; } = new List<ProductImage>();
 
+        public List<Review> Reviews { get; set; } = new List<Review>();
+
 
     }
 }

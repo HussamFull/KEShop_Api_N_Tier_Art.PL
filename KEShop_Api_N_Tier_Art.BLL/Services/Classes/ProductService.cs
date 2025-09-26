@@ -42,7 +42,7 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
             return  _repository.Add(entity);
         }
 
-        public async Task<List<ProductResponse>> GetAllProducts(HttpRequest request, bool onlayActive = false)
+        public async Task<List<ProductResponse>> GetAllProducts(HttpRequest request, int pageNumber=1, int pageSize=1, bool onlayActive = false)
         {
             var products =  _repository.GetAllProductsWithImage();
 
@@ -50,15 +50,23 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
             {
                 products = products.Where(p => p.Status == Status.Active).ToList();
             }
+           var pagedProducts = products.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-            return products.Select(p => new ProductResponse
+            return pagedProducts.Select(p => new ProductResponse
             {
                 Id = p.Id,
                 Name = p.Name,
                 Description = p.Description,
                 Quantity = p.Quantity,
                 MainImageUrl = $"{request.Scheme}://{request.Host}/Images/{p.MainImage}",
-                SubImagesUrl = p.SubImages.Select(img => $"{request.Scheme}://{request.Host}/Images/{img.ImageName}").ToList()
+                SubImagesUrl = p.SubImages.Select(img => $"{request.Scheme}://{request.Host}/Images/{img.ImageName}").ToList(),
+                Reviews = p.Reviews.Select(r => new ReviewResponse
+                {
+                    Id = r.Id,
+                    FullName = r.User.FullName,
+                    Comment = r.Comment,
+                    Rate = r.Rate
+                }).ToList()
 
             }).ToList();
         }

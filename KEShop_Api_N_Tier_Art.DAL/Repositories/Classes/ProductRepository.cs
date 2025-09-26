@@ -60,7 +60,7 @@ namespace KEShop_Api_N_Tier_Art.DAL.Repositories.Classes
 
         public List<Product> GetAllProductsWithImage()
         {
-            return _context.Products.Include(p => p.SubImages).ToList();
+            return _context.Products.Include(p => p.SubImages).Include(p=>p.Reviews).ThenInclude(r=>r.User).ToList();
         }
     }
 }

@@ -22,8 +22,12 @@ namespace KEShop_Api_N_Tier_Art.PL.Areas.Admin.Controllers
             _productService = ProductService;
         }
         [HttpGet("")]
-        public IActionResult GetAll() => Ok(_productService.GetAllProducts(Request));
-      
+        public IActionResult GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
+        {
+
+            var products = _productService.GetAllProducts(Request,pageNumber,pageSize, false);
+            return Ok(products);
+        }
 
         [HttpPost("")]
         public async Task<IActionResult> Create([FromForm] ProductRequest request)
