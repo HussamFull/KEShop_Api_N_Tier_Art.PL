@@ -11,12 +11,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Scalar;
 using Scalar.AspNetCore;
 using Stripe;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using FileService = KEShop_Api_N_Tier_Art.BLL.Services.Classes.FileService;
@@ -31,6 +34,35 @@ namespace KEShop_Api_N_Tier_Art.PL
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            const string defaultCulture = "en";
+            var supportedCultures = new[]
+            {
+                new CultureInfo(defaultCulture),
+               // new CultureInfo("en"),
+                new CultureInfo("ar"),
+                new CultureInfo("de")
+            };
+
+            builder.Services.Configure<RequestLocalizationOptions>(options => {
+                options.DefaultRequestCulture = new RequestCulture(defaultCulture);
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+
+                options.RequestCultureProviders = new List<IRequestCultureProvider>
+                {
+                    new QueryStringRequestCultureProvider()
+                    {
+                        QueryStringKey="lang"
+                    },
+                };
+            });
+
+            
+
+
+
+          
 
             // Add services to the container.
 
@@ -48,6 +80,13 @@ namespace KEShop_Api_N_Tier_Art.PL
                            
                 });
             });
+
+            // Localization  
+            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+
+
+
 
 
             // ******* /// 
@@ -165,7 +204,8 @@ namespace KEShop_Api_N_Tier_Art.PL
             await objectOfSeedData.IdentityDataSeedingAsync();
 
             app.UseHttpsRedirection();
-
+            app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
+           
             app.UseAuthentication();
             app.UseCors(userPolicy);
             app.UseAuthorization();

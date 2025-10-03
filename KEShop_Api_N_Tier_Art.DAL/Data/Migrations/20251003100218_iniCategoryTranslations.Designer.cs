@@ -4,6 +4,7 @@ using KEShop_Api_N_Tier_Art.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KEShop_Api_N_Tier_Art.DAL.Data.Migrations
 {
     [DbContext(typeof(ApplictionDbContext))]
-    partial class ApplictionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251003100218_iniCategoryTranslations")]
+    partial class iniCategoryTranslations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,6 +172,7 @@ namespace KEShop_Api_N_Tier_Art.DAL.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
@@ -191,10 +195,6 @@ namespace KEShop_Api_N_Tier_Art.DAL.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Language")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

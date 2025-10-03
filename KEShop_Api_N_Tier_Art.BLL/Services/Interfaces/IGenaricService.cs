@@ -20,5 +20,8 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Interfaces
 
         bool ToggleStatus(int id);
 
+        public IQueryable<TEntity> Entities { get; }
+
+
     }
 }

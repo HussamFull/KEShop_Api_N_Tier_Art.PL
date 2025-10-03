@@ -21,6 +21,12 @@ namespace KEShop_Api_N_Tier_Art.BLL.Services.Classes
             _repository = repository;
         }
 
+        /// <summary>
+
+        /// </summary>
+        public IQueryable<TEntity> Entities => _repository.GetAll().AsQueryable();
+
+
         public int Create(TRequest request)
         {
             var entity = request.Adapt< TEntity > ();

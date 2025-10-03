@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace KEShop_Api_N_Tier_Art.DAL.DTO.Responses
 {
-    public class CategoryResponses
-        
+    public class CategoryTranslationResponses
     {
-        public int Id { get; set; }
-       
-        public List<CategoryTranslationResponses> CategoryTranslations { get; set; }
+      
+        public string Name { get; set; }
+        public string Language { get; set; } = "en";
+      
     }
 }
